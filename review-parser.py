@@ -3,8 +3,6 @@ import csv
 
 mongo = pymongo.MongoClient("mongodb://localhost/reviews")
 db = mongo["reviews"]
-#for x in db["data"].find():
-#	print(x)
 db["data"].drop()
 data = db["data"]
 
@@ -35,7 +33,4 @@ with open('../reviews.csv', newline='') as csvfile:
 				i = i + 1
 		if n > 0:
 			data.insert_one(review)
-			print(review)
 		n = n + 1
-		if n > 200:
-			break
