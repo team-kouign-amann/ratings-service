@@ -13,12 +13,15 @@ def parse(key, value):
 	if types[key] == 0:
 		return int(value)
 	if types[key] == 1:
-		return value[1:len(value) - 1]
+		if value == 'null' or len(value) == 0:
+			return None	
+		elif value[0] == '\"' and value[len(value) - 1] == '\"':
+			return value[1:len(value) - 1]
 	if types[key] == 2:
 		return 'true' in value
 	return value
 
-with open('reviews.csv', newline='') as csvfile:
+with open('../reviews.csv', newline='') as csvfile:
 	spamreader = csv.reader(csvfile, quotechar='|')
 	n = 0
 	for row in spamreader:
@@ -34,3 +37,5 @@ with open('reviews.csv', newline='') as csvfile:
 			data.insert_one(review)
 			print(review)
 		n = n + 1
+		if n > 200:
+			break
