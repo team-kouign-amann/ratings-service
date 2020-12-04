@@ -5,7 +5,7 @@ mongo = pymongo.MongoClient("mongodb://localhost/reviews")
 db = mongo["reviews"]
 db["data"].drop()
 data = db["data"]
-
+photos = db["photos"]
 def parse(key, value):
 	types = [0,0,0,1,1,1,2,2,1,1,1,0]
 	if types[key] == 0:
@@ -32,5 +32,11 @@ with open('../reviews.csv', newline='') as csvfile:
 				review[col[i]] = parse(i, item)
 				i = i + 1
 		if n > 0:
+			urls = []
+			for photo in photos.find({"review_id": review["id"]}):
+				urls = urls + [photo["url"]]
+			review["photos"] = urls
 			data.insert_one(review)
+		if n % 20000 == 0:
+			print(n)
 		n = n + 1
