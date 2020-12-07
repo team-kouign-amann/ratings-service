@@ -1,11 +1,13 @@
 import pymongo
 import csv
+import os
 
 mongo = pymongo.MongoClient("mongodb://localhost/reviews")
 db = mongo["reviews"]
 db["data"].drop()
 data = db["data"]
 photos = db["photos"]
+revchars = db["revchars"]
 def parse(key, value):
 	types = [0,0,0,1,1,1,2,2,1,1,1,0]
 	if types[key] == 0:
@@ -23,7 +25,7 @@ with open('../reviews.csv', newline='') as csvfile:
 	spamreader = csv.reader(csvfile, quotechar='|')
 	n = 0
 	for row in spamreader:
-		review = {}
+		review = {"photos" : [], "characteristics" : []}
 		if n == 0:
 			col = row
 		else:
@@ -32,11 +34,15 @@ with open('../reviews.csv', newline='') as csvfile:
 				review[col[i]] = parse(i, item)
 				i = i + 1
 		if n > 0:
-			urls = []
 			for photo in photos.find({"review_id": review["id"]}):
-				urls = urls + [photo["url"]]
-			review["photos"] = urls
+				review["photos"] = review["photos"] + [photo["url"]]
+			for characteristic in revchars.find({"review_id": review["id"]}):
+				review["characteristics"] = review["characteristics"] + [{"name": characteristic["characteristic_id"]["name"], "value":characteristic["value"]}]
 			data.insert_one(review)
-		if n % 20000 == 0:
+		if n % 10000 == 0:
 			print(n)
 		n = n + 1
+print("reviews loaded into db")
+data.create_index("product_id")
+print("product id index done")
+os.system("python3 product-db.py")

@@ -1,6 +1,6 @@
 import pymongo
 import csv
-
+import os
 mongo = pymongo.MongoClient("mongodb://localhost/reviews")
 db = mongo["reviews"]
 db["photos"].drop()
@@ -30,7 +30,11 @@ with open('../reviews_photos.csv', newline='') as csvfile:
                     for item in row:
                         photo[col[i]] = parse(i, item)
                         i = i + 1
-                    x = data.insert_one(photo)
+                    data.insert_one(photo)
                     if n % 10000 == 0:
                         print(n)
 		n = n + 1
+print("photos loaded into db")
+data.create_index("review_id")
+print("review id index done")
+os.system("python3 review-parser.py")
