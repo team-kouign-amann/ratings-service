@@ -11,10 +11,15 @@ app.use(bodyParser.json());
 
 app.get('/reviews/:id', (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
+    console.log(req.params);
     ratings.findOne({id: Number(req.params.id)}).then((data) => {
-        console.log(data);
         res.status(200).send(data);
     });
+});
+app.post('/reviews/:id', (req, res) => {
+    console.log(req.params);
+    console.log(req.body);
+    res.status(200).send();
 });
 
 app.listen(3000, () => {
