@@ -1,0 +1,11 @@
+{
+    "scripts": {
+        "start": "nodemon app.js"
+    },
+    "dependencies": {
+        "body-parser": "^1.17.2",
+        "express": "^4.15.0",
+        "mongodb": "^3.1.4",
+        "mongoose": "^5.2.12"
+    }
+}
