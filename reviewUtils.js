@@ -12,10 +12,11 @@ const getMetadata = (data) => {
     for (var review of data.reviews) {
         meta['ratings'][review.rating] ++;
         meta['recommended'] += review.recommend ? 1 : 0;
-        for (var char of review.characteristics) {
-            var total = chars[char.name] * meta['characteristics'][char.name];
-            chars[char.name]++;
-            meta['characteristics'][char.name] = Number(((total + char.value) / chars[char.name]).toFixed(2));
+        for (var char in review.characteristics) {
+            var total = chars[char] * meta['characteristics'][char];
+            chars[char]++;
+            meta['characteristics'][char] = Number(((total + review.characteristics[char])
+                / chars[char]).toFixed(2));
         }
     }
     return meta;

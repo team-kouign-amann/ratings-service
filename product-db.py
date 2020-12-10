@@ -3,8 +3,8 @@ import csv
 
 mongo = pymongo.MongoClient("mongodb://localhost/reviews")
 db = mongo["reviews"]
-db["ratings"].drop()
-ratings = db["ratings"]
+db["products"].drop()
+products = db["products"]
 data = db["data"]
 chars = db["chars"]
 
@@ -14,12 +14,16 @@ with open('../product.csv', newline='') as csvfile:
 	for row in spamreader:
 		if n != 0:
 			product = {"id" : int(row[0]), "reviews" : [], "characteristics" : []}
+			i = 0
 			for review in data.find({"product_id" : int(row[0])},
 				{"_id" : 0, "id" : 0, "product_id" : 0}):
-				product["reviews"] = product["reviews"] + [review]
+				indrev = review
+				indrev["index"] = i
+				product["reviews"] = product["reviews"] + [indrev]
+				i = i + 1
 			for characteristic in chars.find({"product_id" : int(row[0])}):
 				product["characteristics"] = product["characteristics"] + [characteristic["name"]]
-			ratings.insert_one(product)
+			products.insert_one(product)
 			if n % 10000 == 0:
                         	print(n)
 		n = n + 1

@@ -25,7 +25,7 @@ with open('../reviews.csv', newline='') as csvfile:
 	spamreader = csv.reader(csvfile, quotechar='|')
 	n = 0
 	for row in spamreader:
-		review = {"photos" : [], "characteristics" : []}
+		review = {"photos" : [], "characteristics" : {}}
 		if n == 0:
 			col = row
 		else:
@@ -37,7 +37,7 @@ with open('../reviews.csv', newline='') as csvfile:
 			for photo in photos.find({"review_id": review["id"]}):
 				review["photos"] = review["photos"] + [photo["url"]]
 			for characteristic in revchars.find({"review_id": review["id"]}):
-				review["characteristics"] = review["characteristics"] + [{"name": characteristic["characteristic_id"]["name"], "value":characteristic["value"]}]
+				review["characteristics"][characteristic["characteristic_id"]["name"]] = characteristic["value"]
 			data.insert_one(review)
 		if n % 10000 == 0:
 			print(n)
