@@ -56,5 +56,34 @@ const sort = (data, by = 'relevant', quality) => {
     return result;
 }
 
+const defaultValue = (key) => {
+    if (key === 'photos') {
+        return [];
+    }
+    if (key === 'characteristics') {
+        return {};
+    }
+    if (key === 'rating') {
+        return 5;
+    }
+    if (key === 'date') {
+        return (new Date()).toJSON().slice(0, 10);
+    }
+    if (key === 'summary' || key === 'body'
+        || key === 'reviewer_name' || key === 'reviewer_email') {
+        return '';
+    }
+    if (key === 'recommend' || key === 'reported') {
+        return false;
+    }
+    if (key === 'response') {
+        return null;
+    }
+    if (key === 'helpfulness') {
+        return 0;
+    }
+}
+
 module.exports.getMetadata = getMetadata;
 module.exports.sort = sort;
+module.exports.defaultValue = defaultValue;
